@@ -22,7 +22,7 @@ TOP_K = 4
 
 # === OpenAI Setup ===
 # === Note: My personal open api key not cognizant api key
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")  # Replace with your actual key or set as env var
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "-proj-D1YjCtlEaM8J9HP0HXtecc-sZ52Dpg1Iv2gJLGUqLYQ0Zk6_f3ygGlPoTKppoRRXO6oD-8fWLLT3BlbkFJ8j13yzE22YKc3bN6y7AONnbbzj5PFdXjrz94tKbqvcqlIEOj3FrTwOqiZFJ3j746lS9eFWVU0A")  # Replace with your actual key or set as env var
 client = OpenAI(api_key=OPENAI_API_KEY)
 OPENAI_MODEL = "gpt-3.5-turbo"  # use GPT-3.5 to avoid access issues
 
@@ -215,4 +215,5 @@ def suggest_resolution(query: Query):
 
 # === Run the App ===
 if __name__ == "__main__":
+
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
