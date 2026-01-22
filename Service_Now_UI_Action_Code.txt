@@ -1,0 +1,40 @@
+function onSuggestResolutionClick() {
+
+    var sysId = g_form.getUniqueValue();
+// sys_id of current record
+
+    var shortDesc = g_form.getValue("short_description");
+
+
+
+    g_form.addInfoMessage("📤 Requesting resolution for ticket: " + sysId);
+
+
+
+    var ga =
+new GlideAjax('SuggestResolutionHelperAjax');
+
+    ga.addParam('sysparm_name',
+'getSuggestions');
+
+    ga.addParam('sysparm_sys_id', sysId);
+
+    ga.addParam('sysparm_query', shortDesc);
+
+
+
+    ga.getXMLAnswer(function(response) {
+
+        if (response) {
+
+            g_form.addInfoMessage("✅ AI Suggestion: " + response);
+
+        } else {
+
+            g_form.addErrorMessage("❌ No resolution suggestion received.");
+
+        }
+
+    });
+
+}
