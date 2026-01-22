@@ -1,0 +1,96 @@
+var SuggestResolutionHelperAjax = Class.create();
+
+SuggestResolutionHelperAjax.prototype =
+Object.extendsObject(AbstractAjaxProcessor, {
+
+    getSuggestions: function() {
+
+        var sysId =
+this.getParameter('sysparm_sys_id');
+
+        var query =
+this.getParameter('sysparm_query');
+
+
+
+        gs.info("📤 [SuggestResolution] Sending request to FastAPI | sys_id: " + sysId +
+", query: " + query);
+
+
+
+        var payload =
+JSON.stringify({
+
+            "ticket_sys_id": sysId,
+
+            "query": query
+
+        });
+
+
+
+        var r =
+new sn_ws.RESTMessageV2();
+
+        r.setEndpoint("https://d8ea8fe9fb3a.ngrok-free.app/suggest_resolution");  // 🔁 Your FastAPI endpoint
+
+        r.setHttpMethod("POST");
+
+        r.setRequestHeader("Content-Type",
+"application/json");
+
+        r.setRequestBody(payload);
+
+
+
+        try {
+
+            var response = r.execute();
+
+            var responseBody = response.getBody();
+
+            var parsed =
+JSON.parse(responseBody);
+
+            var summary = parsed.summary ||
+"❌ No resolution suggestion found.";
+
+
+
+            // ⏺️ Append to work_notes
+
+            var gr =
+new GlideRecord("incident");
+
+            if (gr.get(sysId)) {
+
+                gr.work_notes = "💡 AI Suggestion:\n" + summary;
+
+                gr.update();
+
+                gs.info("📝 work_notes updated for incident: " + sysId);
+
+            } else {
+
+                gs.warn("⚠️ Incident not found for sys_id: " + sysId);
+
+            }
+
+
+
+            return summary;
+
+
+
+        } catch (ex) {
+
+            gs.error("🔥 FastAPI call failed: " + ex.message);
+
+            return
+"❌ Error: " + ex.message;
+
+        }
+
+    }
+
+});
